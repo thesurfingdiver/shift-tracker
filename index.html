@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shift Tracker Pro</title>
+    
+    <!-- PWA Setup -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#10b981">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .nav-link.active { border-bottom-width: 4px; font-weight: 600; }
+        .content-section { display: none; }
+        .content-section.active { display: block; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        .dark ::-webkit-scrollbar-track { background: #1f2937; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+        .form-input { background-color: #ffffff; border: 1px solid #e5e7eb; color: #1f2937; }
+        .dark .form-input { background-color: #374151; border-color: #4b5563; color: #f3f4f6; }
+        .form-input:focus { --tw-ring-opacity: 1; outline: 2px solid transparent; outline-offset: 2px; }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-200">
+
+    <div class="max-w-4xl mx-auto p-2 sm:p-4 min-h-screen flex flex-col">
+        
+        <!-- HEADER -->
+        <header class="flex justify-between items-start my-4 px-2">
+            <div class="w-10 sm:w-12"></div>
+            <div class="text-center flex-grow">
+                <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">National Ambulance Service</h1>
+                <h2 class="text-xl sm:text-2xl font-semibold text-gray-600 dark:text-gray-400">Shift Tracker Pro</h2>
+            </div>
+            <div class="w-10 sm:w-12 flex justify-end">
+                <button id="themeToggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors shadow-sm border border-gray-300 dark:border-gray-600">
+                    <svg id="sunIcon" class="w-6 h-6 text-yellow-500 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    <svg id="moonIcon" class="w-6 h-6 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 24.042l1.354-1.354a9 9 0 11-12.728 0l.707.707 10.667 0zM21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path></svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- NAVIGATION BAR -->
+        <nav class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-2 sticky top-4 z-10 mb-6 transition-colors duration-200">
+            <div class="flex justify-around items-center">
+                <button data-target="eos" class="nav-link active w-full text-center p-2 sm:p-3 rounded-lg transition-colors duration-300 border-b-4 border-green-500 text-green-600 dark:text-green-400" title="Submit Form">
+                    <span class="text-3xl sm:text-4xl">⏱️</span>
+                </button>
+                <button data-target="records" class="nav-link w-full text-center p-2 sm:p-3 rounded-lg transition-colors duration-300 border-b-4 border-transparent hover:bg-gray-100 dark:hover:bg-gray-700 text-purple-600 dark:text-purple-400" title="Recorded Shifts">
+                    <span class="text-3xl sm:text-4xl">📁</span>
+                </button>
+                <button data-target="roster" class="nav-link w-full text-center p-2 sm:p-3 rounded-lg transition-colors duration-300 border-b-4 border-transparent hover:bg-gray-100 dark:hover:bg-gray-700 text-blue-600 dark:text-blue-400" title="Roster">
+                    <span class="text-3xl sm:text-4xl">📅</span>
+                </button>
+                <button data-target="vehicles" class="nav-link w-full text-center p-2 sm:p-3 rounded-lg transition-colors duration-300 border-b-4 border-transparent hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400" title="Vehicles">
+                    <span class="text-3xl sm:text-4xl">🚑</span>
+                </button>
+            </div>
+        </nav>
+
+        <main class="flex-grow">
+            <!-- EOS FORM SECTION -->
+            <section id="eos" class="content-section active p-2 sm:p-4">
+                <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 transition-colors duration-200">
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6 text-center">⏱️ Extended Duty, Overtime and Sub Form</h2>
+                    
+                    <form id="eosForm" class="space-y-6">
+                        <!-- GENERAL DETAILS (BLUE) -->
+                        <fieldset class="border border-blue-200 dark:border-blue-800 p-4 sm:p-5 rounded-xl bg-blue-50/40 dark:bg-blue-900/10 transition-colors">
+                            <legend class="text-lg font-bold text-blue-800 dark:text-blue-300 px-4 py-1 bg-blue-100 dark:bg-blue-900/60 rounded-md shadow-sm border border-blue-200 dark:border-blue-700">General Details</legend>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">CAD Number(s)</label>
+                                    <input type="text" id="cadNumber" class="form-input block w-full rounded-md shadow-sm p-2 focus:border-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Location(s)</label>
+                                    <input type="text" id="location" class="form-input block w-full rounded-md shadow-sm p-2 focus:border-blue-500">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Week</label>
+                                    <div class="mt-1 flex gap-4 bg-white dark:bg-gray-700 p-2 rounded-md border border-gray-200 dark:border-gray-600 shadow-sm">
+                                        <div class="flex items-center"><input id="week1" name="weekOption" type="radio" value="Week 1" class="h-4 w-4 text-blue-600 focus:ring-blue-500"><label for="week1" class="ml-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Week 1</label></div>
+                                        <div class="flex items-center"><input id="week2" name="weekOption" type="radio" value="Week 2" class="h-4 w-4 text-blue-600 focus:ring-blue-500"><label for="week2" class="ml-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Week 2</label></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Payslip Period</label>
+                                    <select id="payslipPeriod" class="form-input block w-full rounded-md shadow-sm p-2 focus:border-blue-500"></select>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Any Other Details</label>
+                                <textarea id="eosDetails" rows="2" class="form-input block w-full rounded-md shadow-sm p-2 focus:border-blue-500"></textarea>
+                            </div>
+                        </fieldset>
+
+                        <!-- 1. EXTENDED DUTY (GREEN) -->
+                        <fieldset class="border border-green-200 dark:border-green-800 p-4 sm:p-5 rounded-xl bg-green-50/40 dark:bg-green-900/10 transition-colors">
+                            <legend class="text-lg font-bold text-green-800 dark:text-green-300 px-4 py-1 bg-green-100 dark:bg-green-900/60 rounded-md shadow-sm border border-green-200 dark:border-green-700">1. Extended Duty</legend>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Date</label>
+                                    <input type="date" id="extDate" class="form-input block w-full rounded-md shadow-sm p-2 focus:border-green-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Time From</label>
+                                    <input type="time" id="extTimeFrom" class="form-input block w-full rounded-md shadow-sm p-2 focus:border-green-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Time To</label>
+                                    <input type="time" id="extTimeTo" class="form-input block w-full rounded-md shadow-sm p-2 focus:border-green-500">
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <!-- 2. OVERTIME SHIFT (AMBER) -->
+                        <fieldset class="border border-amber-200 dark:border-amber-800 p-4 sm:p-5 rounded-xl bg-amber-50/40 dark:bg-amber-900/10 transition-colors">
+                            <legend class="text-lg font-bold text-amber-800 dark:text-amber-300 px-4 py-1 bg-amber-100 dark:bg-amber-900/60 rounded-md shadow-sm border border-amber-200 dark:border-amber-700">2. Overtime Shift</legend>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Date</label>
+                                    <input type="date" id="otDate" class="form-input block w-full rounded-md shadow-sm p-2 focus:border-amber-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Time From</label>
+                                    <input type="time" id="otTimeFrom" class="form-input block w-full rounded-md shadow-sm p-2 focus:border-amber-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Time To</label>
+                                    <input type="time" id="otTimeTo" class="form-input block w-full rounded-md shadow-sm p-2 focus:border-amber-500">
+                                </div>
+                            </div>
+                            <div class="mt-4 bg-white dark:bg-gray-800 p-3 rounded-lg border border-gray-200 dark:border-gray-700 inline-block shadow-sm">
+                                <div class="flex items-center">
+                                    <input id="otIncludesExt" type="checkbox" class="h-5 w-5 text-amber-500 focus:ring-amber-500 rounded">
+                                    <label class="ml-3 block text-sm font-medium text-gray-700 dark:text-gray-300">This Overtime Shift included an Extended Duty</label>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <!-- 3. SUB (PURPLE) -->
+                        <fieldset class="border border-purple-200 dark:border-purple-800 p-4 sm:p-5 rounded-xl bg-purple-50/40 dark:bg-purple-900/10 transition-colors">
+                            <legend class="text-lg font-bold text-purple-800 dark:text-purple-300 px-4 py-1 bg-purple-100 dark:bg-purple-900/60 rounded-md shadow-sm border border-purple-200 dark:border-purple-700">3. Sub Details</legend>
+                            <div class="mb-5 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm space-y-2 sm:space-y-0 sm:flex sm:gap-6">
+                                <div class="flex items-center"><input id="sub5" name="subType" type="radio" value="5 Hour Sub" class="h-4 w-4 text-purple-600 focus:ring-purple-500"><label for="sub5" class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">5 Hour Sub</label></div>
+                                <div class="flex items-center"><input id="sub10" name="subType" type="radio" value="10 Hour Sub" class="h-4 w-4 text-purple-600 focus:ring-purple-500"><label for="sub10" class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">10 Hour Sub</label></div>
+                                <div class="flex items-center"><input id="subOvernight" name="subType" type="radio" value="Overnight Sub" class="h-4 w-4 text-purple-600 focus:ring-purple-500"><label for="subOvernight" class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">Overnight Sub</label></div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div><label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Date From</label><input type="date" id="subDateFrom" class="form-input block w-full rounded-md p-2 focus:border-purple-500"></div>
+                                <div><label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Time From</label><input type="time" id="subTimeFrom" class="form-input block w-full rounded-md p-2 focus:border-purple-500"></div>
+                                <div><label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Date To</label><input type="date" id="subDateTo" class="form-input block w-full rounded-md p-2 focus:border-purple-500"></div>
+                                <div><label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Time To</label><input type="time" id="subTimeTo" class="form-input block w-full rounded-md p-2 focus:border-purple-500"></div>
+                            </div>
+                        </fieldset>
+
+                        <div class="text-center pt-4 flex gap-4 justify-center">
+                            <button id="submitBtn" type="submit" class="w-full md:w-auto inline-flex justify-center py-3 px-10 border border-transparent shadow-md text-lg font-bold rounded-md text-white bg-green-600 hover:bg-green-700 transition-all transform hover:scale-105">Submit to Database</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- RECORDS SECTION -->
+            <section id="records" class="content-section p-2 sm:p-4">
+                <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 transition-colors duration-200">
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6 text-center">📁 Recorded Shifts & Subs</h2>
+                    <div id="recordsContainer" class="space-y-4">
+                        <div class="text-center text-gray-500 py-6 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg">
+                            <p class="mb-2">⚠️ Firebase Not Connected Yet</p>
+                            <p class="text-sm">Once you add your Firebase keys, your saved shifts will appear here.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- ROSTER SECTION -->
+            <section id="roster" class="content-section p-2 sm:p-4">
+                 <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 transition-colors duration-200">
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4 text-center">📅 Duty Roster</h2>
+                    <div class="flex items-center justify-between mb-4">
+                        <button id="prevMonthBtn" class="px-3 py-1 sm:px-4 sm:py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors text-sm shadow-sm font-medium">&lt; Prev</button>
+                        <h3 id="monthYear" class="text-lg sm:text-xl font-semibold text-gray-800 dark:text-white"></h3>
+                        <button id="nextMonthBtn" class="px-3 py-1 sm:px-4 sm:py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors text-sm shadow-sm font-medium">Next &gt;</button>
+                    </div>
+                    <div id="calendarGrid" class="grid grid-cols-7 gap-1 text-center"></div>
+                    
+                    <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+                        <h4 class="text-lg font-semibold mb-2 text-center text-gray-700 dark:text-gray-300">Legend</h4>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm text-gray-600 dark:text-gray-400">
+                            <div class="flex items-center"><span class="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-orange-400 mr-2 border border-gray-300 dark:border-transparent"></span> 07:00 Shift</div>
+                            <div class="flex items-center"><span class="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-blue-400 mr-2 border border-gray-300 dark:border-transparent"></span> 08:00 Shift</div>
+                            <div class="flex items-center"><span class="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-green-400 mr-2 border border-gray-300 dark:border-transparent"></span> 08:30 Shift</div>
+                            <div class="flex items-center"><span class="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-indigo-400 mr-2 border border-gray-300 dark:border-transparent"></span> 19:00 Shift</div>
+                            <div class="flex items-center"><span class="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-red-400 mr-2 border border-gray-300 dark:border-transparent"></span> 20:00 Shift</div>
+                            <div class="flex items-center text-lg">💵 <span class="ml-2 text-sm">Pay Day</span></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VEHICLES SECTION -->
+            <section id="vehicles" class="content-section p-2 sm:p-4">
+                 <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 transition-colors duration-200">
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6 text-center">🚑 Castlebar Vehicles</h2>
+                    <div class="space-y-4">
+                        <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
+                            <h3 class="font-bold text-lg text-gray-800 dark:text-gray-200">Shift: 7:00 - 19:00</h3>
+                            <p class="text-gray-700 dark:text-gray-300"><span class="font-semibold text-gray-600 dark:text-gray-400">Vehicle:</span> <span class="editable-val px-1 rounded inline-block transition-colors" data-key="v1_call">6 L 04</span> (Reg: <span class="editable-val px-1 rounded inline-block transition-colors" data-key="v1_reg">221 G 3106</span>)</p>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm"><span class="font-semibold">Days:</span> Monday - Sunday</p>
+                        </div>
+                        <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
+                            <h3 class="font-bold text-lg text-gray-800 dark:text-gray-200">Shift: 8:00 - 20:00</h3>
+                            <p class="text-gray-700 dark:text-gray-300"><span class="font-semibold text-gray-600 dark:text-gray-400">Vehicle:</span> <span class="editable-val px-1 rounded inline-block transition-colors" data-key="v2_call">6 L 27</span> (Reg: <span class="editable-val px-1 rounded inline-block transition-colors" data-key="v2_reg">221 G 3112</span>)</p>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm"><span class="font-semibold">Days:</span> Monday - Sunday</p>
+                        </div>
+                        <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
+                            <h3 class="font-bold text-lg text-gray-800 dark:text-gray-200">Shift: 8:30 - 20:30</h3>
+                            <p class="text-gray-700 dark:text-gray-300"><span class="font-semibold text-gray-600 dark:text-gray-400">Vehicle Reg:</span> <span class="editable-val px-1 rounded inline-block transition-colors" data-key="v3_reg">251 OY 923</span></p>
+                            <p class="text-gray-700 dark:text-gray-300"><span class="font-semibold text-gray-600 dark:text-gray-400">Call Sign:</span> <span class="editable-val px-1 rounded inline-block transition-colors" data-key="v3_call">6 L 62</span></p>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm"><span class="font-semibold">Days:</span> Monday - Sunday</p>
+                        </div>
+                        <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
+                            <h3 class="font-bold text-lg text-gray-800 dark:text-gray-200">Shift: 8:00 - 17:00</h3>
+                            <p class="text-gray-700 dark:text-gray-300"><span class="font-semibold text-gray-600 dark:text-gray-400">Vehicle:</span> <span class="editable-val px-1 rounded inline-block transition-colors" data-key="v4_call">6 L 31</span> (Reg: <span class="editable-val px-1 rounded inline-block transition-colors" data-key="v4_reg">191 G 1957</span>)</p>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm"><span class="font-semibold">Days:</span> Thursday</p>
+                        </div>
+                        <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
+                            <h3 class="font-bold text-lg text-gray-800 dark:text-gray-200">Shift: 19:00 - 7:00</h3>
+                            <p class="text-gray-700 dark:text-gray-300"><span class="font-semibold text-gray-600 dark:text-gray-400">Vehicle:</span> <span class="editable-val px-1 rounded inline-block transition-colors" data-key="v5_call">6 L 33</span> (Reg: <span class="editable-val px-1 rounded inline-block transition-colors" data-key="v5_reg">212 G 681</span>)</p>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm"><span class="font-semibold">Days:</span> Monday - Sunday</p>
+                        </div>
+                        <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
+                            <h3 class="font-bold text-lg text-gray-800 dark:text-gray-200">Shift: 20:00 - 8:00</h3>
+                            <p class="text-gray-700 dark:text-gray-300"><span class="font-semibold text-gray-600 dark:text-gray-400">Vehicle:</span> <span class="editable-val px-1 rounded inline-block transition-colors" data-key="v6_call">6 L 03</span> (Reg: <span class="editable-val px-1 rounded inline-block transition-colors" data-key="v6_reg">182 G 1860</span>)</p>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm"><span class="font-semibold">Days:</span> Monday - Sunday</p>
+                        </div>
+                        <div class="bg-gray-100 dark:bg-gray-700/80 p-4 rounded-lg border border-gray-200 dark:border-gray-600 shadow-sm">
+                            <h3 class="font-bold text-lg text-gray-800 dark:text-gray-200">Other Vehicles</h3>
+                             <p class="text-gray-700 dark:text-gray-300 mt-2"><span class="font-semibold text-gray-600 dark:text-gray-400">RRV:</span> <span class="editable-val px-1 rounded inline-block transition-colors" data-key="rrv_call">6 R 10</span> (Reg: <span class="editable-val px-1 rounded inline-block transition-colors" data-key="rrv_reg">232 O 27022</span>)</p>
+                             <div class="text-gray-700 dark:text-gray-300 mt-2">
+                                <span class="font-semibold text-gray-600 dark:text-gray-400">ICVs:</span>
+                                <ul class="list-disc list-inside ml-2 mt-1 space-y-1">
+                                    <li><span class="editable-val px-1 rounded inline-block transition-colors" data-key="icv1_call">6 V 04</span> (<span class="editable-val px-1 rounded inline-block transition-colors" data-key="icv1_reg">181 G 2190</span>)</li>
+                                    <li><span class="editable-val px-1 rounded inline-block transition-colors" data-key="icv2_call">6 V 12</span> (<span class="editable-val px-1 rounded inline-block transition-colors" data-key="icv2_reg">181 G 1881</span>)</li>
+                                    <li><span class="editable-val px-1 rounded inline-block transition-colors" data-key="icv3_call">6 V 09</span> (<span class="editable-val px-1 rounded inline-block transition-colors" data-key="icv3_reg">212 G 1773</span>)</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 text-center">
+                            <button id="editVehiclesBtn" class="px-6 py-2 bg-gray-600 text-white font-bold rounded-lg shadow-md hover:bg-gray-700 transition-colors duration-200">Edit Vehicles</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <!-- Info Modal -->
+        <div id="infoModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-20 backdrop-blur-sm">
+            <div class="relative top-20 mx-auto p-5 border w-96 shadow-2xl rounded-lg bg-white dark:bg-gray-800 dark:border-gray-700">
+                <div class="mt-3 text-center">
+                    <div id="modalIcon" class="mx-auto flex items-center justify-center h-12 w-12 rounded-full"></div>
+                    <h3 id="modalTitle" class="text-lg leading-6 font-medium text-gray-900 dark:text-white mt-4"></h3>
+                    <div class="mt-2 px-7 py-3">
+                        <p id="modalMessage" class="text-sm text-gray-500 dark:text-gray-300"></p>
+                    </div>
+                    <div class="items-center px-4 py-3">
+                        <button id="closeModalBtn" class="px-4 py-2 bg-gray-600 text-white text-base font-medium rounded-md w-full shadow-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-colors">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- UI LOGIC -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Theme Toggle
+        const themeToggleBtn = document.getElementById('themeToggle');
+        const sunIcon = document.getElementById('sunIcon');
+        const moonIcon = document.getElementById('moonIcon');
+        const htmlElement = document.documentElement;
+
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            htmlElement.classList.add('dark'); sunIcon.classList.remove('hidden'); moonIcon.classList.add('hidden');
+        } else {
+            htmlElement.classList.remove('dark'); sunIcon.classList.add('hidden'); moonIcon.classList.remove('hidden');
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            htmlElement.classList.toggle('dark');
+            if (htmlElement.classList.contains('dark')) { localStorage.setItem('theme', 'dark'); sunIcon.classList.remove('hidden'); moonIcon.classList.add('hidden'); } 
+            else { localStorage.setItem('theme', 'light'); sunIcon.classList.add('hidden'); moonIcon.classList.remove('hidden'); }
+        });
+
+        // Navigation
+        const navLinks = document.querySelectorAll('.nav-link[data-target]');
+        const contentSections = document.querySelectorAll('.content-section');
+        const colorMap = { eos: 'green', records: 'purple', roster: 'blue', vehicles: 'red' };
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                const targetId = link.dataset.target;
+                navLinks.forEach(nav => { nav.classList.remove('active', `border-${colorMap[nav.dataset.target]}-500`); nav.classList.add('border-transparent'); });
+                link.classList.add('active', `border-${colorMap[targetId]}-500`);
+                contentSections.forEach(section => { section.classList.toggle('active', section.id === targetId); });
+            });
+        });
+
+        // Dropdown
+        const payslipSelect = document.getElementById('payslipPeriod');
+        for (let i = 1; i <= 26; i++) { const opt = document.createElement('option'); opt.value = i; opt.textContent = i; payslipSelect.appendChild(opt); }
+
+        // Modal
+        const modal = document.getElementById('infoModal');
+        document.getElementById('closeModalBtn').addEventListener('click', () => modal.classList.add('hidden'));
+
+        // Vehicle Edit Logic
+        const editVehiclesBtn = document.getElementById('editVehiclesBtn');
+        const editableElements = document.querySelectorAll('.editable-val');
+        let isEditingVehicles = false;
+
+        // Load saved vehicle data on startup
+        editableElements.forEach(el => {
+            const savedVal = localStorage.getItem(el.dataset.key);
+            if (savedVal) el.textContent = savedVal;
+        });
+
+        editVehiclesBtn.addEventListener('click', () => {
+            isEditingVehicles = !isEditingVehicles;
+            if (isEditingVehicles) {
+                editVehiclesBtn.textContent = "Save Changes";
+                editVehiclesBtn.classList.replace('bg-gray-600', 'bg-blue-600');
+                editVehiclesBtn.classList.replace('hover:bg-gray-700', 'hover:bg-blue-700');
+                editableElements.forEach(el => {
+                    el.contentEditable = "true";
+                    el.classList.add('bg-white', 'dark:bg-gray-700', 'border', 'border-blue-400', 'outline-none', 'ring-2', 'ring-blue-500');
+                });
+            } else {
+                editVehiclesBtn.textContent = "Edit Vehicles";
+                editVehiclesBtn.classList.replace('bg-blue-600', 'bg-gray-600');
+                editVehiclesBtn.classList.replace('hover:bg-blue-700', 'hover:bg-gray-700');
+                editableElements.forEach(el => {
+                    el.contentEditable = "false";
+                    el.classList.remove('bg-white', 'dark:bg-gray-700', 'border', 'border-blue-400', 'outline-none', 'ring-2', 'ring-blue-500');
+                    // Save to local storage
+                    localStorage.setItem(el.dataset.key, el.textContent.trim());
+                });
+            }
+        });
+
+        // Calendar Logic
+        const monthYearEl = document.getElementById('monthYear');
+        const calendarGridEl = document.getElementById('calendarGrid');
+        const rosterStartDate = new Date('2025-05-26T00:00:00Z');
+        let currentDate = new Date(); 
+        if (currentDate < rosterStartDate) currentDate = new Date('2025-05-01T00:00:00Z');
+
+        const rosterPattern = [
+            { day: 'Monday', shift: '0830' }, { day: 'Tuesday', shift: '0830' }, { day: 'Wednesday', shift: 'Rest' }, { day: 'Thursday', shift: 'Rest' }, { day: 'Friday', shift: 'Rest' }, { day: 'Saturday', shift: 'Rest' }, { day: 'Sunday', shift: 'Rest' },
+            { day: 'Monday', shift: '2000' }, { day: 'Tuesday', shift: '2000' }, { day: 'Wednesday', shift: '2000' }, { day: 'Thursday', shift: '2000' }, { day: 'Friday', shift: 'Rest' }, { day: 'Saturday', shift: 'Rest' }, { day: 'Sunday', shift: 'Rest' },
+            { day: 'Monday', shift: 'Rest' }, { day: 'Tuesday', shift: 'Rest' }, { day: 'Wednesday', shift: 'Rest' }, { day: 'Thursday', shift: '0800' }, { day: 'Friday', shift: '2000' }, { day: 'Saturday', shift: '2000' }, { day: 'Sunday', shift: '2000' },
+            { day: 'Monday', shift: 'Rest' }, { day: 'Tuesday', shift: 'Rest' }, { day: 'Wednesday', shift: '0700' }, { day: 'Thursday', shift: '0700' }, { day: 'Friday', shift: '0700' }, { day: 'Saturday', shift: 'Rest' }, { day: 'Sunday', shift: 'Rest' },
+            { day: 'Monday', shift: '0700' }, { day: 'Tuesday', shift: '0700' }, { day: 'Wednesday', shift: 'Rest' }, { day: 'Thursday', shift: 'Rest' }, { day: 'Friday', shift: 'Rest' }, { day: 'Saturday', shift: '0700' }, { day: 'Sunday', shift: '0700' },
+            { day: 'Monday', shift: '1900' }, { day: 'Tuesday', shift: '1900' }, { day: 'Wednesday', shift: 'Rest' }, { day: 'Thursday', shift: 'Rest' }, { day: 'Friday', shift: 'Rest' }, { day: 'Saturday', shift: '1900' }, { day: 'Sunday', shift: '1900' },
+            { day: 'Monday', shift: 'Rest' }, { day: 'Tuesday', shift: 'Rest' }, { day: 'Wednesday', shift: '1900' }, { day: 'Thursday', shift: '1900' }, { day: 'Friday', shift: '1900' }, { day: 'Saturday', shift: 'Rest' }, { day: 'Sunday', shift: 'Rest' },
+            { day: 'Monday', shift: '0800' }, { day: 'Tuesday', shift: '0800' }, { day: 'Wednesday', shift: '0800' }, { day: 'Thursday', shift: '0800' }, { day: 'Friday', shift: 'Rest' }, { day: 'Saturday', shift: 'Rest' }, { day: 'Sunday', shift: 'Rest' },
+            { day: 'Monday', shift: 'Rest' }, { day: 'Tuesday', shift: 'Rest' }, { day: 'Wednesday', shift: 'Rest' }, { day: 'Thursday', shift: 'Rest' }, { day: 'Friday', shift: '0800' }, { day: 'Saturday', shift: '0800' }, { day: 'Sunday', shift: '0800' },
+            { day: 'Monday', shift: 'Rest' }, { day: 'Tuesday', shift: 'Rest' }, { day: 'Wednesday', shift: '0830' }, { day: 'Thursday', shift: '0830' }, { day: 'Friday', shift: '0830' }, { day: 'Saturday', shift: 'Rest' }, { day: 'Sunday', shift: 'Rest' },
+            { day: 'Monday', shift: 'Rest' }, { day: 'Tuesday', shift: 'Rest' }, { day: 'Wednesday', shift: 'Rest' }, { day: 'Thursday', shift: 'Rest' }, { day: 'Friday', shift: 'Rest' }, { day: 'Saturday', shift: '0830' }, { day: 'Sunday', shift: '0830' }
+        ];
+
+        function generateCalendar(year, month) {
+            calendarGridEl.innerHTML = '';
+            const today = new Date();
+            const firstDay = new Date(year, month, 1);
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            let startingDay = firstDay.getDay() || 7; 
+            
+            monthYearEl.textContent = firstDay.toLocaleString('default', { month: 'long', year: 'numeric' });
+            
+            ['M', 'T', 'W', 'T', 'F', 'S', 'S'].forEach(d => {
+                const el = document.createElement('div'); el.className = 'font-bold text-gray-500 p-2 text-xs sm:text-sm'; el.textContent = d; calendarGridEl.appendChild(el);
+            });
+            for (let i = 1; i < startingDay; i++) calendarGridEl.appendChild(document.createElement('div'));
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(Date.UTC(year, month, day));
+                const isToday = (day === today.getDate() && month === today.getMonth() && year === today.getFullYear());
+                const dayEl = document.createElement('div');
+                
+                dayEl.className = `p-1 rounded-md sm:rounded-lg h-24 sm:h-28 flex flex-col text-[9px] sm:text-xs border relative bg-gray-50/30 dark:bg-gray-800/30 ${isToday ? 'border-blue-500 border-2 font-bold' : 'border-gray-200 dark:border-gray-700'}`;
+                
+                const diffDays = Math.round((date - rosterStartDate) / 86400000);
+                let shiftHtml = ''; let weekHtml = ''; let payHtml = '';
+                
+                if (diffDays >= 0) {
+                    const shift = rosterPattern[diffDays % rosterPattern.length].shift;
+                    if (shift !== 'Rest') {
+                        const color = shift === '0700' ? 'bg-orange-400' : shift === '0800' ? 'bg-blue-400' : shift === '0830' ? 'bg-green-400' : shift === '1900' ? 'bg-indigo-400' : 'bg-red-400';
+                        shiftHtml = `<div class="font-bold p-0.5 sm:p-1 rounded-md w-full text-center text-white shadow-sm ${color}">${shift}</div>`;
+                    }
+                    weekHtml = `<div class="text-[9px] text-gray-400">W${(Math.floor(diffDays / 7) % 2) + 1}</div>`;
+                }
+                
+                const payDayDiff = Math.round((date - new Date('2025-06-05T00:00:00Z')) / 86400000);
+                if (payDayDiff >= 0 && payDayDiff % 14 === 0) {
+                    payHtml = `<div class="mt-auto text-lg sm:text-xl w-full flex justify-center pb-1">💵</div>`;
+                }
+                
+                dayEl.innerHTML = `<span class="font-semibold self-start mb-1 text-gray-600 dark:text-gray-300">${day}</span>${weekHtml}<div class="flex-grow flex flex-col justify-center items-center">${shiftHtml}</div>${payHtml}`;
+                calendarGridEl.appendChild(dayEl);
+            }
+        }
+        document.getElementById('prevMonthBtn').onclick = () => { currentDate.setMonth(currentDate.getMonth() - 1); generateCalendar(currentDate.getFullYear(), currentDate.getMonth()); };
+        document.getElementById('nextMonthBtn').onclick = () => { currentDate.setMonth(currentDate.getMonth() + 1); generateCalendar(currentDate.getFullYear(), currentDate.getMonth()); };
+        generateCalendar(currentDate.getFullYear(), currentDate.getMonth());
+    });
+    </script>
+
+    <!-- FIREBASE MODULE -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, updateDoc, doc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        // ==============================================================================
+        // YOUR FIREBASE CONFIGURATION GOES HERE
+        // ==============================================================================
+        const firebaseConfig = {
+            // apiKey: "YOUR_API_KEY",
+            // authDomain: "YOUR_PROJECT.firebaseapp.com",
+            // projectId: "YOUR_PROJECT_ID",
+            // storageBucket: "YOUR_PROJECT.appspot.com",
+            // messagingSenderId: "YOUR_SENDER_ID",
+            // appId: "YOUR_APP_ID"
+        };
+
+        let db;
+        try {
+            if(Object.keys(firebaseConfig).length > 0) {
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                listenForRecords();
+            }
+        } catch (error) {
+            console.error("Firebase config error.");
+        }
+
+        // Global Modal helper
+        function showModalMsg(type, title, message) {
+            const modal = document.getElementById('infoModal');
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalMessage').textContent = message;
+            const modalIcon = document.getElementById('modalIcon');
+            modalIcon.innerHTML = type === 'success' 
+                ? `<svg class="h-6 w-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`
+                : `<svg class="h-6 w-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`;
+            modalIcon.className = type === 'success' ? 'mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 dark:bg-green-900' : 'mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900';
+            modal.classList.remove('hidden');
+        }
+
+        // --- Firebase Form Submission ---
+        document.getElementById('eosForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            
+            if(!db) {
+                showModalMsg('error', 'Setup Required', 'Firebase is not connected yet! Please add your config keys to save records.');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.textContent = "Saving...";
+
+            const weekOption = document.querySelector('input[name="weekOption"]:checked');
+            const subType = document.querySelector('input[name="subType"]:checked');
+            
+            const formData = {
+                timestamp: new Date().toISOString(),
+                status: { submitted: false, paid: false },
+                general: {
+                    cad: document.getElementById('cadNumber').value,
+                    location: document.getElementById('location').value,
+                    week: weekOption ? weekOption.value : 'N/A',
+                    period: document.getElementById('payslipPeriod').value,
+                    details: document.getElementById('eosDetails').value
+                },
+                extended: {
+                    date: document.getElementById('extDate').value,
+                    timeFrom: document.getElementById('extTimeFrom').value,
+                    timeTo: document.getElementById('extTimeTo').value
+                },
+                overtime: {
+                    date: document.getElementById('otDate').value,
+                    timeFrom: document.getElementById('otTimeFrom').value,
+                    timeTo: document.getElementById('otTimeTo').value,
+                    includesExt: document.getElementById('otIncludesExt').checked
+                },
+                sub: {
+                    type: subType ? subType.value : '',
+                    dateFrom: document.getElementById('subDateFrom').value,
+                    timeFrom: document.getElementById('subTimeFrom').value,
+                    dateTo: document.getElementById('subDateTo').value,
+                    timeTo: document.getElementById('subTimeTo').value
+                }
+            };
+
+            try {
+                await addDoc(collection(db, "shifts"), formData);
+                showModalMsg('success', 'Saved Successfully', 'Your shift has been saved to the database.');
+                document.getElementById('eosForm').reset();
+            } catch (error) {
+                showModalMsg('error', 'Error', 'Failed to save to Firebase database.');
+            } finally {
+                submitBtn.textContent = "Submit to Database";
+            }
+        });
+
+        // --- Fetch & Render Records from Firebase ---
+        function listenForRecords() {
+            const recordsContainer = document.getElementById('recordsContainer');
+            const q = query(collection(db, "shifts"), orderBy("timestamp", "desc"));
+            
+            onSnapshot(q, (querySnapshot) => {
+                recordsContainer.innerHTML = '';
+                if (querySnapshot.empty) {
+                    recordsContainer.innerHTML = '<div class="text-center text-gray-500 py-6 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg">No records found. Submit a form to get started.</div>';
+                    return;
+                }
+
+                querySnapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    const id = docSnap.id;
+                    const displayDate = new Date(data.timestamp).toLocaleDateString('en-GB');
+                    
+                    let title = "Recorded Form";
+                    let badgeColor = "bg-gray-500";
+                    if (data.extended.date && !data.overtime.date) { title = "Extended Duty"; badgeColor = "bg-green-500"; }
+                    if (data.overtime.date) { title = "Overtime Shift"; badgeColor = "bg-amber-500"; }
+                    if (data.sub.type) { title = data.sub.type; badgeColor = "bg-purple-500"; }
+
+                    const card = document.createElement('div');
+                    card.className = "bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm relative";
+                    card.innerHTML = `
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <span class="inline-block px-2 py-1 text-[10px] font-bold text-white rounded ${badgeColor} mb-1">${title}</span>
+                                <h3 class="font-bold text-gray-800 dark:text-gray-200">CAD: ${data.general.cad || 'N/A'}</h3>
+                            </div>
+                            <span class="text-xs text-gray-500 dark:text-gray-400">${displayDate}</span>
+                        </div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-4"><span class="font-semibold">Loc:</span> ${data.general.location || 'N/A'} | <span class="font-semibold">Period:</span> ${data.general.period || 'N/A'}</p>
+                        
+                        <div class="flex flex-wrap gap-4 pt-3 border-t border-gray-200 dark:border-gray-700">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" class="form-checkbox h-5 w-5 text-purple-600 rounded border-gray-400 update-status" data-id="${id}" data-field="submitted" ${data.status?.submitted ? 'checked' : ''}>
+                                <span class="ml-2 text-sm font-bold text-gray-700 dark:text-gray-300">Submitted</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" class="form-checkbox h-5 w-5 text-green-600 rounded border-gray-400 update-status" data-id="${id}" data-field="paid" ${data.status?.paid ? 'checked' : ''}>
+                                <span class="ml-2 text-sm font-bold text-gray-700 dark:text-gray-300">Paid €</span>
+                            </label>
+                        </div>
+                    `;
+                    recordsContainer.appendChild(card);
+                });
+
+                document.querySelectorAll('.update-status').forEach(checkbox => {
+                    checkbox.addEventListener('change', async (e) => {
+                        const docId = e.target.dataset.id;
+                        const field = e.target.dataset.field;
+                        await updateDoc(doc(db, "shifts", docId), { [`status.${field}`]: e.target.checked });
+                    });
+                });
+            });
+        }
+    </script>
+    
+    <!-- PWA Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW registration failed: ', err));
+            });
+        }
+    </script>
+</body>
+</html>

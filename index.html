@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shift Tracker Pro</title>
     
-    <!-- PWA Setup -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#10b981">
     <link rel="apple-touch-icon" href="icon-192.png">
@@ -34,16 +33,31 @@
 </head>
 <body class="bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-200">
 
+    <div id="loginScreen" class="fixed inset-0 bg-gray-100 dark:bg-gray-900 z-50 flex items-center justify-center transition-colors duration-200">
+        <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 w-11/12 max-w-sm text-center">
+            <div class="text-5xl mb-4">🚑</div>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Shift Tracker Pro</h2>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">Authorized Personnel Only</p>
+            <form id="loginForm" class="space-y-4">
+                <div><input type="email" id="loginEmail" placeholder="Email Address" required class="form-input w-full rounded-md shadow-sm p-3 focus:border-blue-500"></div>
+                <div><input type="password" id="loginPassword" placeholder="Password" required class="form-input w-full rounded-md shadow-sm p-3 focus:border-blue-500"></div>
+                <button type="submit" id="loginBtn" class="w-full py-3 px-4 bg-blue-600 text-white font-bold rounded-lg shadow-md hover:bg-blue-700 transition-colors">Log In</button>
+            </form>
+            <p id="loginError" class="text-red-500 text-sm mt-4 hidden">Invalid credentials. Try again.</p>
+        </div>
+    </div>
+
     <div class="max-w-4xl mx-auto p-2 sm:p-4 min-h-screen flex flex-col">
         
-        <!-- HEADER -->
         <header class="flex justify-between items-start my-4 px-2">
-            <div class="w-10 sm:w-12"></div>
+            <div class="w-16 sm:w-20 flex justify-start items-center">
+                <button id="logoutBtn" onclick="window.logoutApp()" class="hidden text-xs sm:text-sm font-bold text-red-500 hover:text-red-700 bg-red-100 dark:bg-red-900/30 px-2 sm:px-3 py-1 rounded-md transition-colors shadow-sm border border-red-200 dark:border-red-800">Log Out</button>
+            </div>
             <div class="text-center flex-grow">
                 <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">National Ambulance Service</h1>
                 <h2 class="text-xl sm:text-2xl font-semibold text-gray-600 dark:text-gray-400">Shift Tracker Pro</h2>
             </div>
-            <div class="w-10 sm:w-12 flex justify-end">
+            <div class="w-16 sm:w-20 flex justify-end">
                 <button id="themeToggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors shadow-sm border border-gray-300 dark:border-gray-600">
                     <svg id="sunIcon" class="w-6 h-6 text-yellow-500 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                     <svg id="moonIcon" class="w-6 h-6 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 24.042l1.354-1.354a9 9 0 11-12.728 0l.707.707 10.667 0zM21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path></svg>
@@ -51,7 +65,6 @@
             </div>
         </header>
 
-        <!-- NAVIGATION BAR -->
         <nav class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-2 sticky top-4 z-10 mb-6 transition-colors duration-200">
             <div class="flex justify-around items-center">
                 <button data-target="eos" class="nav-link active w-full text-center p-2 sm:p-3 rounded-lg transition-colors duration-300 border-b-4 border-green-500 text-green-600 dark:text-green-400" title="Submit Form">
@@ -70,13 +83,11 @@
         </nav>
 
         <main class="flex-grow">
-            <!-- EOS FORM SECTION -->
             <section id="eos" class="content-section active p-2 sm:p-4">
                 <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 transition-colors duration-200">
                     <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6 text-center">⏱️ Extended Duty, Overtime and Sub Form</h2>
                     
                     <form id="eosForm" class="space-y-6">
-                        <!-- GENERAL DETAILS (BLUE) -->
                         <fieldset class="border border-blue-200 dark:border-blue-800 p-4 sm:p-5 rounded-xl bg-blue-50/40 dark:bg-blue-900/10 transition-colors">
                             <legend class="text-lg font-bold text-blue-800 dark:text-blue-300 px-4 py-1 bg-blue-100 dark:bg-blue-900/60 rounded-md shadow-sm border border-blue-200 dark:border-blue-700">General Details</legend>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
@@ -108,41 +119,21 @@
                             </div>
                         </fieldset>
 
-                        <!-- 1. EXTENDED DUTY (GREEN) -->
                         <fieldset class="border border-green-200 dark:border-green-800 p-4 sm:p-5 rounded-xl bg-green-50/40 dark:bg-green-900/10 transition-colors">
                             <legend class="text-lg font-bold text-green-800 dark:text-green-300 px-4 py-1 bg-green-100 dark:bg-green-900/60 rounded-md shadow-sm border border-green-200 dark:border-green-700">1. Extended Duty</legend>
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Date</label>
-                                    <input type="date" id="extDate" class="form-input block w-full rounded-md shadow-sm p-2 focus:border-green-500">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Time From</label>
-                                    <input type="time" id="extTimeFrom" class="form-input block w-full rounded-md shadow-sm p-2 focus:border-green-500">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Time To</label>
-                                    <input type="time" id="extTimeTo" class="form-input block w-full rounded-md shadow-sm p-2 focus:border-green-500">
-                                </div>
+                                <div><label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Date</label><input type="date" id="extDate" class="form-input block w-full rounded-md shadow-sm p-2 focus:border-green-500"></div>
+                                <div><label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Time From</label><input type="time" id="extTimeFrom" class="form-input block w-full rounded-md shadow-sm p-2 focus:border-green-500"></div>
+                                <div><label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Time To</label><input type="time" id="extTimeTo" class="form-input block w-full rounded-md shadow-sm p-2 focus:border-green-500"></div>
                             </div>
                         </fieldset>
 
-                        <!-- 2. OVERTIME SHIFT (AMBER) -->
                         <fieldset class="border border-amber-200 dark:border-amber-800 p-4 sm:p-5 rounded-xl bg-amber-50/40 dark:bg-amber-900/10 transition-colors">
                             <legend class="text-lg font-bold text-amber-800 dark:text-amber-300 px-4 py-1 bg-amber-100 dark:bg-amber-900/60 rounded-md shadow-sm border border-amber-200 dark:border-amber-700">2. Overtime Shift</legend>
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Date</label>
-                                    <input type="date" id="otDate" class="form-input block w-full rounded-md shadow-sm p-2 focus:border-amber-500">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Time From</label>
-                                    <input type="time" id="otTimeFrom" class="form-input block w-full rounded-md shadow-sm p-2 focus:border-amber-500">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Time To</label>
-                                    <input type="time" id="otTimeTo" class="form-input block w-full rounded-md shadow-sm p-2 focus:border-amber-500">
-                                </div>
+                                <div><label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Date</label><input type="date" id="otDate" class="form-input block w-full rounded-md shadow-sm p-2 focus:border-amber-500"></div>
+                                <div><label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Time From</label><input type="time" id="otTimeFrom" class="form-input block w-full rounded-md shadow-sm p-2 focus:border-amber-500"></div>
+                                <div><label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Time To</label><input type="time" id="otTimeTo" class="form-input block w-full rounded-md shadow-sm p-2 focus:border-amber-500"></div>
                             </div>
                             <div class="mt-4 bg-white dark:bg-gray-800 p-3 rounded-lg border border-gray-200 dark:border-gray-700 inline-block shadow-sm">
                                 <div class="flex items-center">
@@ -152,7 +143,6 @@
                             </div>
                         </fieldset>
 
-                        <!-- 3. SUB (PURPLE) -->
                         <fieldset class="border border-purple-200 dark:border-purple-800 p-4 sm:p-5 rounded-xl bg-purple-50/40 dark:bg-purple-900/10 transition-colors">
                             <legend class="text-lg font-bold text-purple-800 dark:text-purple-300 px-4 py-1 bg-purple-100 dark:bg-purple-900/60 rounded-md shadow-sm border border-purple-200 dark:border-purple-700">3. Sub Details</legend>
                             <div class="mb-5 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm space-y-2 sm:space-y-0 sm:flex sm:gap-6">
@@ -175,20 +165,17 @@
                 </div>
             </section>
 
-            <!-- RECORDS SECTION -->
             <section id="records" class="content-section p-2 sm:p-4">
                 <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 transition-colors duration-200">
                     <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6 text-center">📁 Recorded Shifts & Subs</h2>
                     <div id="recordsContainer" class="space-y-4">
                         <div class="text-center text-gray-500 py-6 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg">
-                            <p class="mb-2">⚠️ Firebase Not Connected Yet</p>
-                            <p class="text-sm">Once you add your Firebase keys, your saved shifts will appear here.</p>
+                            <p class="mb-2">Awaiting Login...</p>
                         </div>
                     </div>
                 </div>
             </section>
             
-            <!-- ROSTER SECTION -->
             <section id="roster" class="content-section p-2 sm:p-4">
                  <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 transition-colors duration-200">
                     <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4 text-center">📅 Duty Roster</h2>
@@ -213,7 +200,6 @@
                 </div>
             </section>
 
-            <!-- VEHICLES SECTION -->
             <section id="vehicles" class="content-section p-2 sm:p-4">
                  <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 transition-colors duration-200">
                     <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6 text-center">🚑 Castlebar Vehicles</h2>
@@ -221,45 +207,30 @@
                         <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
                             <h3 class="font-bold text-lg text-gray-800 dark:text-gray-200">Shift: 7:00 - 19:00</h3>
                             <p class="text-gray-700 dark:text-gray-300"><span class="font-semibold text-gray-600 dark:text-gray-400">Vehicle:</span> <span class="editable-val px-1 rounded inline-block transition-colors" data-key="v1_call">6 L 04</span> (Reg: <span class="editable-val px-1 rounded inline-block transition-colors" data-key="v1_reg">221 G 3106</span>)</p>
-                            <p class="text-gray-600 dark:text-gray-400 text-sm"><span class="font-semibold">Days:</span> Monday - Sunday</p>
                         </div>
                         <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
                             <h3 class="font-bold text-lg text-gray-800 dark:text-gray-200">Shift: 8:00 - 20:00</h3>
                             <p class="text-gray-700 dark:text-gray-300"><span class="font-semibold text-gray-600 dark:text-gray-400">Vehicle:</span> <span class="editable-val px-1 rounded inline-block transition-colors" data-key="v2_call">6 L 27</span> (Reg: <span class="editable-val px-1 rounded inline-block transition-colors" data-key="v2_reg">221 G 3112</span>)</p>
-                            <p class="text-gray-600 dark:text-gray-400 text-sm"><span class="font-semibold">Days:</span> Monday - Sunday</p>
                         </div>
                         <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
                             <h3 class="font-bold text-lg text-gray-800 dark:text-gray-200">Shift: 8:30 - 20:30</h3>
-                            <p class="text-gray-700 dark:text-gray-300"><span class="font-semibold text-gray-600 dark:text-gray-400">Vehicle Reg:</span> <span class="editable-val px-1 rounded inline-block transition-colors" data-key="v3_reg">251 OY 923</span></p>
-                            <p class="text-gray-700 dark:text-gray-300"><span class="font-semibold text-gray-600 dark:text-gray-400">Call Sign:</span> <span class="editable-val px-1 rounded inline-block transition-colors" data-key="v3_call">6 L 62</span></p>
-                            <p class="text-gray-600 dark:text-gray-400 text-sm"><span class="font-semibold">Days:</span> Monday - Sunday</p>
+                            <p class="text-gray-700 dark:text-gray-300"><span class="font-semibold text-gray-600 dark:text-gray-400">Call Sign:</span> <span class="editable-val px-1 rounded inline-block transition-colors" data-key="v3_call">6 L 62</span> (Reg: <span class="editable-val px-1 rounded inline-block transition-colors" data-key="v3_reg">251 OY 923</span>)</p>
                         </div>
                         <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
                             <h3 class="font-bold text-lg text-gray-800 dark:text-gray-200">Shift: 8:00 - 17:00</h3>
                             <p class="text-gray-700 dark:text-gray-300"><span class="font-semibold text-gray-600 dark:text-gray-400">Vehicle:</span> <span class="editable-val px-1 rounded inline-block transition-colors" data-key="v4_call">6 L 31</span> (Reg: <span class="editable-val px-1 rounded inline-block transition-colors" data-key="v4_reg">191 G 1957</span>)</p>
-                            <p class="text-gray-600 dark:text-gray-400 text-sm"><span class="font-semibold">Days:</span> Thursday</p>
                         </div>
                         <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
                             <h3 class="font-bold text-lg text-gray-800 dark:text-gray-200">Shift: 19:00 - 7:00</h3>
                             <p class="text-gray-700 dark:text-gray-300"><span class="font-semibold text-gray-600 dark:text-gray-400">Vehicle:</span> <span class="editable-val px-1 rounded inline-block transition-colors" data-key="v5_call">6 L 33</span> (Reg: <span class="editable-val px-1 rounded inline-block transition-colors" data-key="v5_reg">212 G 681</span>)</p>
-                            <p class="text-gray-600 dark:text-gray-400 text-sm"><span class="font-semibold">Days:</span> Monday - Sunday</p>
                         </div>
                         <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
                             <h3 class="font-bold text-lg text-gray-800 dark:text-gray-200">Shift: 20:00 - 8:00</h3>
                             <p class="text-gray-700 dark:text-gray-300"><span class="font-semibold text-gray-600 dark:text-gray-400">Vehicle:</span> <span class="editable-val px-1 rounded inline-block transition-colors" data-key="v6_call">6 L 03</span> (Reg: <span class="editable-val px-1 rounded inline-block transition-colors" data-key="v6_reg">182 G 1860</span>)</p>
-                            <p class="text-gray-600 dark:text-gray-400 text-sm"><span class="font-semibold">Days:</span> Monday - Sunday</p>
                         </div>
                         <div class="bg-gray-100 dark:bg-gray-700/80 p-4 rounded-lg border border-gray-200 dark:border-gray-600 shadow-sm">
                             <h3 class="font-bold text-lg text-gray-800 dark:text-gray-200">Other Vehicles</h3>
                              <p class="text-gray-700 dark:text-gray-300 mt-2"><span class="font-semibold text-gray-600 dark:text-gray-400">RRV:</span> <span class="editable-val px-1 rounded inline-block transition-colors" data-key="rrv_call">6 R 10</span> (Reg: <span class="editable-val px-1 rounded inline-block transition-colors" data-key="rrv_reg">232 O 27022</span>)</p>
-                             <div class="text-gray-700 dark:text-gray-300 mt-2">
-                                <span class="font-semibold text-gray-600 dark:text-gray-400">ICVs:</span>
-                                <ul class="list-disc list-inside ml-2 mt-1 space-y-1">
-                                    <li><span class="editable-val px-1 rounded inline-block transition-colors" data-key="icv1_call">6 V 04</span> (<span class="editable-val px-1 rounded inline-block transition-colors" data-key="icv1_reg">181 G 2190</span>)</li>
-                                    <li><span class="editable-val px-1 rounded inline-block transition-colors" data-key="icv2_call">6 V 12</span> (<span class="editable-val px-1 rounded inline-block transition-colors" data-key="icv2_reg">181 G 1881</span>)</li>
-                                    <li><span class="editable-val px-1 rounded inline-block transition-colors" data-key="icv3_call">6 V 09</span> (<span class="editable-val px-1 rounded inline-block transition-colors" data-key="icv3_reg">212 G 1773</span>)</li>
-                                </ul>
-                            </div>
                         </div>
                         
                         <div class="mt-6 text-center">
@@ -270,7 +241,6 @@
             </section>
         </main>
         
-        <!-- Info Modal -->
         <div id="infoModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-20 backdrop-blur-sm">
             <div class="relative top-20 mx-auto p-5 border w-96 shadow-2xl rounded-lg bg-white dark:bg-gray-800 dark:border-gray-700">
                 <div class="mt-3 text-center">
@@ -287,7 +257,6 @@
         </div>
     </div>
     
-    <!-- UI LOGIC -->
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Theme Toggle
@@ -335,7 +304,6 @@
         const editableElements = document.querySelectorAll('.editable-val');
         let isEditingVehicles = false;
 
-        // Load saved vehicle data on startup
         editableElements.forEach(el => {
             const savedVal = localStorage.getItem(el.dataset.key);
             if (savedVal) el.textContent = savedVal;
@@ -358,7 +326,6 @@
                 editableElements.forEach(el => {
                     el.contentEditable = "false";
                     el.classList.remove('bg-white', 'dark:bg-gray-700', 'border', 'border-blue-400', 'outline-none', 'ring-2', 'ring-blue-500');
-                    // Save to local storage
                     localStorage.setItem(el.dataset.key, el.textContent.trim());
                 });
             }
@@ -369,7 +336,6 @@
         const calendarGridEl = document.getElementById('calendarGrid');
         const rosterStartDate = new Date('2025-05-26T00:00:00Z');
         let currentDate = new Date(); 
-        if (currentDate < rosterStartDate) currentDate = new Date('2025-05-01T00:00:00Z');
 
         const rosterPattern = [
             { day: 'Monday', shift: '0830' }, { day: 'Tuesday', shift: '0830' }, { day: 'Wednesday', shift: 'Rest' }, { day: 'Thursday', shift: 'Rest' }, { day: 'Friday', shift: 'Rest' }, { day: 'Saturday', shift: 'Rest' }, { day: 'Sunday', shift: 'Rest' },
@@ -433,35 +399,30 @@
     });
     </script>
 
-    <!-- FIREBASE MODULE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, collection, addDoc, updateDoc, doc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-        // ==============================================================================
-        // YOUR FIREBASE CONFIGURATION GOES HERE
-        // ==============================================================================
         const firebaseConfig = {
-            // apiKey: "YOUR_API_KEY",
-            // authDomain: "YOUR_PROJECT.firebaseapp.com",
-            // projectId: "YOUR_PROJECT_ID",
-            // storageBucket: "YOUR_PROJECT.appspot.com",
-            // messagingSenderId: "YOUR_SENDER_ID",
-            // appId: "YOUR_APP_ID"
+            apiKey: "AIzaSyB7Om6z5reIQ1gQTi_vvEeniklY7LRcnNE",
+            authDomain: "shift-tracker-pro-7afa0.firebaseapp.com",
+            projectId: "shift-tracker-pro-7afa0",
+            storageBucket: "shift-tracker-pro-7afa0.firebasestorage.app",
+            messagingSenderId: "392133565738",
+            appId: "1:392133565738:web:faf538ad9176574d849253"
         };
 
-        let db;
+        let db, auth;
         try {
-            if(Object.keys(firebaseConfig).length > 0) {
-                const app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                listenForRecords();
-            }
-        } catch (error) {
-            console.error("Firebase config error.");
-        }
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+        } catch (error) { console.error("Firebase config error."); }
 
-        // Global Modal helper
+        // Global functions
+        window.logoutApp = () => { if(auth) signOut(auth); };
+
         function showModalMsg(type, title, message) {
             const modal = document.getElementById('infoModal');
             document.getElementById('modalTitle').textContent = title;
@@ -474,12 +435,47 @@
             modal.classList.remove('hidden');
         }
 
-        // --- Firebase Form Submission ---
+        // --- AUTHENTICATION LOGIC ---
+        const loginScreen = document.getElementById('loginScreen');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const loginForm = document.getElementById('loginForm');
+        let unsubscribeRecords = null;
+
+        if (auth) {
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    loginScreen.classList.add('hidden');
+                    logoutBtn.classList.remove('hidden');
+                    listenForRecords(); // Load data after secure login
+                } else {
+                    loginScreen.classList.remove('hidden');
+                    logoutBtn.classList.add('hidden');
+                    if (unsubscribeRecords) unsubscribeRecords();
+                    document.getElementById('recordsContainer').innerHTML = '<div class="text-center text-gray-500 py-6 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg">Awaiting Login...</div>';
+                }
+            });
+
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('loginBtn');
+                btn.textContent = "Verifying...";
+                try {
+                    await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPassword').value);
+                    document.getElementById('loginError').classList.add('hidden');
+                } catch (error) {
+                    document.getElementById('loginError').classList.remove('hidden');
+                } finally {
+                    btn.textContent = "Log In";
+                }
+            });
+        }
+
+        // --- FORM SUBMISSION ---
         document.getElementById('eosForm').addEventListener('submit', async (event) => {
             event.preventDefault();
             
-            if(!db) {
-                showModalMsg('error', 'Setup Required', 'Firebase is not connected yet! Please add your config keys to save records.');
+            if(!auth || !auth.currentUser) {
+                showModalMsg('error', 'Auth Required', 'You must be logged in to save records.');
                 return;
             }
 
@@ -521,21 +517,21 @@
 
             try {
                 await addDoc(collection(db, "shifts"), formData);
-                showModalMsg('success', 'Saved Successfully', 'Your shift has been saved to the database.');
+                showModalMsg('success', 'Saved Successfully', 'Your shift has been saved to the secure database.');
                 document.getElementById('eosForm').reset();
             } catch (error) {
-                showModalMsg('error', 'Error', 'Failed to save to Firebase database.');
+                showModalMsg('error', 'Error', 'Failed to save. Check your connection or login status.');
             } finally {
                 submitBtn.textContent = "Submit to Database";
             }
         });
 
-        // --- Fetch & Render Records from Firebase ---
+        // --- FETCH RECORDS ---
         function listenForRecords() {
             const recordsContainer = document.getElementById('recordsContainer');
             const q = query(collection(db, "shifts"), orderBy("timestamp", "desc"));
             
-            onSnapshot(q, (querySnapshot) => {
+            unsubscribeRecords = onSnapshot(q, (querySnapshot) => {
                 recordsContainer.innerHTML = '';
                 if (querySnapshot.empty) {
                     recordsContainer.innerHTML = '<div class="text-center text-gray-500 py-6 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg">No records found. Submit a form to get started.</div>';
@@ -590,7 +586,6 @@
         }
     </script>
     
-    <!-- PWA Registration -->
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
